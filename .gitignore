@@ -1,0 +1,27 @@
+# Temporary and raw data
+data_raw/*
+data/*.rds
+data/*.feather
+
+# Manuscript output
+manuscript/*.html
+manuscript/*.docx
+manuscript/*.pdf
+manuscript/*.tex
+manuscript/*.bib
+manuscript/tex_out/*
+submissions/*
+
+# Figures
+figures/**.pdf
+figures/**.png
+figures/**.ai
+
+# R stuff
+.Rproj.user
+.Rhistory
+.RData
+
+# Miscellaneous
+*.~lock.*
+sandbox/*
