@@ -1,0 +1,24 @@
+---
+title: External datasets
+datasets:
+  - name: DCJW NGO laws
+    title: "NGO Laws"
+    author:
+      - name: Darin Christensen
+        affiliation: Stanford University
+        email: darin.christensen@gmail.com
+      - name:  Jeremy M. Weinstein
+        affiliation: Stanford University
+        email: jweinst@stanford.edu
+    url: https://darinchristensen.github.io/Data/DCJW_NGO_Laws.xlsx
+    filename: "data_raw/DCJW_NGO_Laws"
+    type: xlsx
+    description: >-
+      Collection of all laws related to general associational rights and
+      barriers to entry, funding, and advocacy for NGOs in 98 countries
+      from 1909–2012
+    citation: >-
+      Christensen, Darin, and Jeremy M. Weinstein. 2013. "Defunding Dissent:
+      Restrictions on Aid to NGOs." *Journal of Democracy 24, no. 2 (April):
+      77–91. doi:10.1353/jod.2013.0026.
+---
