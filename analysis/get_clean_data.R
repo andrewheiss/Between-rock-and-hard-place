@@ -30,7 +30,7 @@ dcjw <- read_excel(dcjw.path)[,1:50] %>%
   filter(!is.na(Country)) %>%
   mutate(var.name = ifelse(var.name == "", "value", gsub("_", "", var.name))) %>%
   spread(var.name, value) %>%
-  mutate(year.actual = ymd(paste0(year, "-01-01")),
+  mutate(year.actual = ymd(paste0(year, "-01-01"), quiet=TRUE),
          country.name = countrycode(Country, "country.name", "country.name"))
 
 write_feather(dcjw, file.path(PROJHOME, "data", "dcjw.feather"))
