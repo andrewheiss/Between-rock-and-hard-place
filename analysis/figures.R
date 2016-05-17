@@ -121,7 +121,7 @@ bush.plot <- read_feather(file.path(PROJHOME, "data", "bush.feather")) %>%
   gather(variable, perc, -year.actual) %>%
   mutate(variable = factor(variable,
                            levels=c("perc.professional", "perc.measurable"),
-                           labels=c("Professional staff", "Measurable programs"),
+                           labels=c("Professional staff    ", "Measurable programs"),
                            ordered=TRUE))
 
 fig.bush <- ggplot(bush.plot, aes(x=year.actual, y=perc, colour=variable)) +
@@ -132,7 +132,7 @@ fig.bush <- ggplot(bush.plot, aes(x=year.actual, y=perc, colour=variable)) +
        caption="Source: Bush 2015") +
   scale_y_continuous(labels=percent) + 
   scale_color_manual(values=c("black", "grey70"), name=NULL) +
-  guides(colour=guide_legend(nrow=2, ncol=3)) +
+  guides(colour=guide_legend(nrow=2, ncol=3, byrow=TRUE)) +
   theme_ingos(7)
 fig.bush
 
