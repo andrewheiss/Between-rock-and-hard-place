@@ -13,7 +13,7 @@ theme_ingos <- function(base_size=9, base_family="Open Sans Light") {
     theme(panel.background = element_rect(fill="#ffffff", colour=NA),
           title=element_text(size=rel(1.1), vjust=1.2, family="Open Sans Semibold"),
           plot.subtitle=element_text(size=rel(0.8), family="Open Sans Light"),
-          plot.caption=element_text(margin=margin(t=5), size=rel(0.6),
+          plot.caption=element_text(margin=margin(t=1), size=rel(0.6),
                                     family="Open Sans Light"),
           panel.border = element_blank(), 
           panel.margin = unit(1, "lines"),
@@ -64,14 +64,14 @@ fig.restrictions <- ggplot(restrictions,
                                colour=question, linetype=question)) + 
   geom_line(size=1) + 
   coord_cartesian(xlim=ymd("1950-01-01", "2011-01-01")) +
-  labs(x=NULL, y="\nCumulative number of countries with law",
+  labs(x=NULL, y="\nCumulative countries",
        title="Countries with NGO regulations",
        caption="Source: Christensen and Weinstein 2013") + 
-  scale_color_manual(values=c("black", "grey50", "grey30"), name=NULL) +
+  scale_color_manual(values=c("black", "grey70", "grey40"), name=NULL) +
   scale_linetype_manual(values=c("solid", "solid", "21"), name=NULL) +
   guides(colour=guide_legend(nrow=2),
          linetype=guide_legend(nrow=2)) +
-  theme_ingos(8)
+  theme_ingos(7)
 fig.restrictions
 
 # fig.save.cairo(fig.restrictions, filename="fig-restrictions",
@@ -95,30 +95,56 @@ fig.ecosoc <- ggplot(ecosoc.plot.data,
                          colour=status.clean, linetype=status.clean)) +
   geom_line(size=1) +
   coord_cartesian(xlim=ymd("1950-01-01", "2016-01-01")) +
-  labs(x=NULL, y="Cumulative number of NGOs with ECOSOC status",
+  labs(x=NULL, y="Cumulative NGOs",
        title="NGOs with ECOSOC status",
        subtitle=paste("General status represents highest level of participation;",
                       "roster status represents lowest level of participation",
                       sep="\n"),
        caption="Source: UN Economic and Social Council NGO database, 2016") +
   scale_y_continuous(labels=comma) + 
-  scale_color_manual(values=c("black", "grey50", "grey30"), name=NULL) +
+  scale_color_manual(values=c("black", "grey70", "grey40"), name=NULL) +
   scale_linetype_manual(values=c("solid", "solid", "21"), name=NULL) +
   guides(colour=guide_legend(nrow=2, ncol=3, byrow=TRUE),
          linetype=guide_legend(nrow=2, ncol=3, byrow=TRUE)) +
-  theme_ingos(8)
+  theme_ingos(7)
 fig.ecosoc
 
 # fig.save.cairo(fig.ecosoc, filename="fig-ecosoc",
 #                width=3.35, height=3)
 
+
+# Percentage of NED programs that are measurable
+bush.plot <- read_feather(file.path(PROJHOME, "data", "bush.feather")) %>%
+  group_by(year.actual) %>%
+  summarise(perc.measurable = mean(measurable), 
+            perc.professional = mean(professional)) %>%
+  gather(variable, perc, -year.actual) %>%
+  mutate(variable = factor(variable,
+                           levels=c("perc.professional", "perc.measurable"),
+                           labels=c("Professional staff", "Measurable programs"),
+                           ordered=TRUE))
+
+fig.bush <- ggplot(bush.plot, aes(x=year.actual, y=perc, colour=variable)) +
+  geom_line(size=1) +
+  coord_cartesian(xlim=ymd("1985-01-01", "2010-01-01")) +
+  labs(x=NULL, y="\nPercentage",
+       title="NED characteristics",
+       caption="Source: Bush 2015") +
+  scale_y_continuous(labels=percent) + 
+  scale_color_manual(values=c("black", "grey70"), name=NULL) +
+  guides(colour=guide_legend(nrow=2, ncol=3)) +
+  theme_ingos(7)
+fig.bush
+
+
 # Combine plots with gtable::cbind instead of gridExtra because it aligns axes
 # and titles across plots
 plot.all <- cbind(ggplotGrob(fig.ecosoc),
                   ggplotGrob(fig.restrictions),
+                  ggplotGrob(fig.bush),
                   size="first")  # Use the spacing from the first plot
 
 grid::grid.draw(plot.all)
 
 fig.save.cairo(plot.all, filename="fig-ingos",
-               width=7, height=3.5)
+               width=8, height=2.5)
