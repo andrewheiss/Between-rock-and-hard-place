@@ -42,7 +42,11 @@ write_feather(dcjw, file.path(PROJHOME, "data", "dcjw.feather"))
 # ----------------------------
 # ECOSOC consultative status
 # ----------------------------
-# The UN site be default checks for a login cookie that is set when first searching in the database. This can be overridden with the `sessionCheck=false` parameter. The `show=x` parameter controls how many entries are shown. Set this really, really high to get every possible organization in one page.
+# The UN site by default checks for a login cookie that is set when first
+# searching in the database. This can be overridden with the
+# `sessionCheck=false` parameter. The `show=x` parameter controls how many
+# entries are shown. Set this really, really high to get every possible
+# organization in one page.
 
 if (!file.exists(file.path(PROJHOME, "data", "ecosoc.feather"))) {
   ecosoc.url <- "https://esango.un.org/civilsociety/getByAllHavingStatus.do?method=getByAllHavingStatus&searchType=csSearch&show=10000&sessionCheck=false"

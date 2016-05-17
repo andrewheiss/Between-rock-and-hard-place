@@ -2,7 +2,6 @@
 title: External datasets
 datasets:
   - name: DCJW NGO laws
-    title: "NGO Laws"
     author:
       - name: Darin Christensen
         affiliation: Stanford University
@@ -21,4 +20,34 @@ datasets:
       Christensen, Darin, and Jeremy M. Weinstein. 2013. "Defunding Dissent:
       Restrictions on Aid to NGOs." *Journal of Democracy 24, no. 2 (April):
       77–91. doi:10.1353/jod.2013.0026.
+
+  - name: UN ECOSOC NGOs
+    author:
+      - name: United Nations Economic and Social Council (ECOSOC)
+        url: https://www.un.org/ecosoc/en/home
+    url: https://esango.un.org/civilsociety/getByAllHavingStatus.do?method=getByAllHavingStatus&searchType=csSearch&show=10000&sessionCheck=false
+    type: html
+    description: >-
+      List of all NGOs with ECOSOC consultative status
+    notes: >-
+      The list on the website is actually incomplete. Roughly 400 NGOs do not
+      have the year they received ECOSOC status. The PDF list at
+      http://csonet.org/content/documents/E-2014-INF-5%20Issued.pdf includes
+      all dates, but it's a PDF (!)
+
+  - name: The Taming of Democracy Asssistance replication datasets
+    author:
+      - name: Sarah Sunn Bush
+        affiliation: Temple University
+        email: sara.bush@temple.edu
+    url: http://sites.temple.edu/sarahbush/
+    filename: "data_raw/Ch_5_Replication_File.dta"
+    type: dta
+    description: >-
+      Replication data for models and figures in chapter 5 of *The Taming of
+      Democracy Assistance*. Received from author via e-mail.
+    citation: >-
+      Bush, Sarah Sunn. 2015. *The Taming of Democracy Assistance: Why
+      Democracy Promotion Does Not Confront Dictators.* Cambridge: Cambridge
+      University Press.
 ---
