@@ -2,9 +2,9 @@ library(dplyr)
 library(feather)
 library(ggplot2)
 
+# Different types of civil society restrictions over time
 dcjw <- read_feather(file.path(PROJHOME, "data", "dcjw.feather"))
 
-# Different types of civil society restrictions over time
 restrictions <- dcjw %>%
   filter(question %in% c("q_2a", "q_3e", "q_4a"), !is.na(year)) %>%
   arrange(year.actual) %>%
