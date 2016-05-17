@@ -1,7 +1,47 @@
 library(dplyr)
 library(feather)
 library(ggplot2)
+library(Cairo)
 library(scales)
+
+# Theme
+theme_ingos <- function(base_size=9, base_family="Open Sans Light") {
+  update_geom_defaults("bar", list(fill = "grey30"))
+  update_geom_defaults("line", list(colour = "grey30"))
+  ret <- theme_bw(base_size, base_family) +
+    theme(panel.background = element_rect(fill="#ffffff", colour=NA),
+          title=element_text(size=rel(1.1), vjust=1.2, family="Open Sans Semibold"),
+          plot.subtitle=element_text(size=rel(0.8), family="Open Sans Light"),
+          plot.caption=element_text(margin=margin(t=10), size=rel(0.6),
+                                    family="Open Sans Light"),
+          panel.border = element_blank(), 
+          panel.margin = unit(1, "lines"),
+          panel.grid.minor = element_blank(),
+          panel.grid.major = element_line(size=0.25, colour="grey90"),
+          axis.line = element_blank(),
+          axis.ticks = element_blank(),
+          axis.title = element_text(size=rel(0.8), family="Open Sans Semibold"),
+          axis.title.y = element_text(margin = margin(r = 10)),
+          axis.title.x = element_text(margin = margin(t = 10)),
+          legend.position = "bottom",
+          legend.title = element_text(size=rel(0.8)),
+          legend.key.size=unit(.7, "line"),
+          legend.key = element_blank(),
+          legend.margin = unit(0.1, "lines"),
+          strip.text = element_text(size=rel(1), family="Open Sans Semibold"),
+          strip.background = element_rect(fill="#ffffff", colour=NA))
+  ret
+}
+
+# Save Cairo PDF and PNG at the same time
+fig.save.cairo <- function(fig, filepath=file.path(PROJHOME, "figures"), 
+                           filename, width, height, units="in", ...) {
+  ggsave(fig, filename=file.path(filepath, paste0(filename, ".pdf")),
+         width=width, height=height, units=units, device=cairo_pdf, ...)
+  ggsave(fig, filename=file.path(filepath, paste0(filename, ".png")),
+         width=width, height=height, units=units, type="cairo", dpi=300, ...)
+}
+
 
 # Different types of civil society restrictions over time
 dcjw <- read_feather(file.path(PROJHOME, "data", "dcjw.feather"))
@@ -18,14 +58,21 @@ restrictions <- dcjw %>%
                                     "Foreign funding prohibition    ",
                                     "Advocacy restrictions")))
 
-ggplot(restrictions, aes(x=year.actual, y=cumulative.count,
-                         colour=question, linetype=question)) + 
+fig.restrictions <- ggplot(restrictions, 
+                           aes(x=year.actual, y=cumulative.count,
+                               colour=question, linetype=question)) + 
   geom_line(size=1) + 
   coord_cartesian(xlim=ymd("1950-01-01", "2011-01-01")) +
   labs(x=NULL, y="Cumulative number of countries with law") + 
   scale_color_manual(values=c("black", "grey50", "grey30"), name=NULL) +
-  scale_linetype_manual(values=c("solid", "solid", "32"), name=NULL) +
-  theme_light(8) + theme(legend.position="bottom")
+  scale_linetype_manual(values=c("solid", "solid", "21"), name=NULL) +
+  guides(colour=guide_legend(nrow=2),
+         linetype=guide_legend(nrow=2)) +
+  theme_ingos(8)
+fig.restrictions
+
+fig.save.cairo(fig.restrictions, filename="fig_restrictions",
+               width=3.35, height=3)
 
 
 # Number of NGOs with ECOSOC status over time
@@ -40,12 +87,17 @@ ecosoc.plot.data <- ecosoc %>%
                                levels=c("General", "Roster", "Special"),
                                labels=c("General    ", "Roster    ", "Special")))
 
-ggplot(ecosoc.plot.data, aes(x=year.actual, y=cumulative.count,
-                             colour=status.clean, linetype=status.clean)) +
+fig.ecosoc <- ggplot(ecosoc.plot.data, 
+                     aes(x=year.actual, y=cumulative.count,
+                         colour=status.clean, linetype=status.clean)) +
   geom_line(size=1) +
   coord_cartesian(xlim=ymd("1950-01-01", "2016-01-01")) +
   labs(x=NULL, y="Cumulative number of NGOs with ECOSOC status") +
   scale_y_continuous(labels=comma) + 
   scale_color_manual(values=c("black", "grey50", "grey30"), name=NULL) +
-  scale_linetype_manual(values=c("solid", "solid", "32"), name=NULL) +
-  theme_light(8) + theme(legend.position="bottom")
+  scale_linetype_manual(values=c("solid", "solid", "21"), name=NULL) +
+  theme_ingos(8)
+fig.ecosoc
+
+fig.save.cairo(fig.ecosoc, filename="fig_ecosoc",
+               width=3.35, height=3)
