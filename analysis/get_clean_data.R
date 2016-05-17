@@ -5,6 +5,8 @@ library(readxl)
 library(lubridate)
 library(countrycode)
 library(feather)
+library(rvest)
+library(stringr)
 
 # -----------------------------------------------------------------------------
 # NB: See `data/external_data.yaml` for metadata about each of these datasets
@@ -34,3 +36,50 @@ dcjw <- read_excel(dcjw.path)[,1:50] %>%
          country.name = countrycode(Country, "country.name", "country.name"))
 
 write_feather(dcjw, file.path(PROJHOME, "data", "dcjw.feather"))
+
+
+# ----------------------------
+# ECOSOC consultative status
+# ----------------------------
+# The UN site be default checks for a login cookie that is set when first searching in the database. This can be overridden with the `sessionCheck=false` parameter. The `show=x` parameter controls how many entries are shown. Set this really, really high to get every possible organization in one page.
+
+if (!file.exists(file.path(PROJHOME, "data", "ecosoc.feather"))) {
+  ecosoc.url <- "https://esango.un.org/civilsociety/getByAllHavingStatus.do?method=getByAllHavingStatus&searchType=csSearch&show=10000&sessionCheck=false"
+  
+  # Scrape HTML table from site
+  ecosoc.raw <- read_html(ecosoc.url) %>%
+    html_nodes(xpath='//*[@id="pagedResults1"]/form/table') %>%
+    html_table(header=TRUE, fill=TRUE) %>% 
+    data.frame(stringsAsFactors=FALSE) %>%
+    select(org.name = 1, status = 2)
+  
+  # Each status column follows a similar pattern: Status Year, Extra stuff
+  # Extract these parts into separate columns
+  ecosoc.clean <- ecosoc.raw %>%
+    mutate(status = gsub("\\n|\\t", " ", status)) %>%
+    extract(status, into=c("status.clean", "year", "extra"), 
+            regex="(General|Special|Roster) +(\\d+)(.*)", remove=FALSE)
+  
+  # extract() chokes when the pattern does not include a year, so separate the
+  # entries with a date from those without and parse the ones using a different
+  # regex pattern
+  ecosoc.with.date <- ecosoc.clean %>%
+    filter(!is.na(status.clean)) %>%
+    select(-status) %>%
+    mutate(extra = ifelse(extra == "", NA_character_,
+                          gsub(" +", ", ", str_trim(gsub(",", "", extra), side="both"))))
+  
+  ecosoc.no.date <- ecosoc.clean %>%
+    filter(is.na(status.clean), !is.na(status), status != "Cease to exist") %>%
+    select(org.name, status) %>%
+    separate(status, into=c("status.clean", "extra"),
+             extra="merge", fill="right") %>%
+    mutate(year = NA)
+  
+  # Combine the dated and dateless rows into one master dataframe
+  ecosoc.all <- bind_rows(ecosoc.with.date, ecosoc.no.date) %>%
+    mutate(year.actual = ymd(paste0(year, "-01-01"), quiet=TRUE))
+
+  # Save this puppy
+  write_feather(ecosoc.all, file.path(PROJHOME, "data", "ecosoc.feather"))
+}
