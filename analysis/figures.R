@@ -1,6 +1,7 @@
 library(dplyr)
 library(feather)
 library(ggplot2)
+library(gtable)
 library(Cairo)
 library(scales)
 
@@ -12,7 +13,7 @@ theme_ingos <- function(base_size=9, base_family="Open Sans Light") {
     theme(panel.background = element_rect(fill="#ffffff", colour=NA),
           title=element_text(size=rel(1.1), vjust=1.2, family="Open Sans Semibold"),
           plot.subtitle=element_text(size=rel(0.8), family="Open Sans Light"),
-          plot.caption=element_text(margin=margin(t=10), size=rel(0.6),
+          plot.caption=element_text(margin=margin(t=5), size=rel(0.6),
                                     family="Open Sans Light"),
           panel.border = element_blank(), 
           panel.margin = unit(1, "lines"),
@@ -63,7 +64,9 @@ fig.restrictions <- ggplot(restrictions,
                                colour=question, linetype=question)) + 
   geom_line(size=1) + 
   coord_cartesian(xlim=ymd("1950-01-01", "2011-01-01")) +
-  labs(x=NULL, y="Cumulative number of countries with law") + 
+  labs(x=NULL, y="\nCumulative number of countries with law",
+       title="Countries with NGO regulations",
+       caption="Source: Christensen and Weinstein 2013") + 
   scale_color_manual(values=c("black", "grey50", "grey30"), name=NULL) +
   scale_linetype_manual(values=c("solid", "solid", "21"), name=NULL) +
   guides(colour=guide_legend(nrow=2),
@@ -71,8 +74,8 @@ fig.restrictions <- ggplot(restrictions,
   theme_ingos(8)
 fig.restrictions
 
-fig.save.cairo(fig.restrictions, filename="fig_restrictions",
-               width=3.35, height=3)
+# fig.save.cairo(fig.restrictions, filename="fig_restrictions",
+#                width=3.35, height=3)
 
 
 # Number of NGOs with ECOSOC status over time
@@ -84,20 +87,38 @@ ecosoc.plot.data <- ecosoc %>%
   mutate(cumulative.count = cumsum(count)) %>%
   ungroup() %>%
   mutate(status.clean = factor(status.clean,
-                               levels=c("General", "Roster", "Special"),
-                               labels=c("General    ", "Roster    ", "Special")))
+                               levels=c("General", "Special", "Roster"),
+                               labels=c("General    ", "Special    ", "Roster")))
 
 fig.ecosoc <- ggplot(ecosoc.plot.data, 
                      aes(x=year.actual, y=cumulative.count,
                          colour=status.clean, linetype=status.clean)) +
   geom_line(size=1) +
   coord_cartesian(xlim=ymd("1950-01-01", "2016-01-01")) +
-  labs(x=NULL, y="Cumulative number of NGOs with ECOSOC status") +
+  labs(x=NULL, y="Cumulative number of NGOs with ECOSOC status",
+       title="NGOs with ECOSOC status",
+       subtitle=paste("General status represents highest level of participation;",
+                      "roster status represents lowest level of participation",
+                      sep="\n"),
+       caption="Source: UN Economic and Social Council NGO database, 2016") +
   scale_y_continuous(labels=comma) + 
   scale_color_manual(values=c("black", "grey50", "grey30"), name=NULL) +
   scale_linetype_manual(values=c("solid", "solid", "21"), name=NULL) +
+  guides(colour=guide_legend(nrow=2, ncol=3, byrow=TRUE),
+         linetype=guide_legend(nrow=2, ncol=3, byrow=TRUE)) +
   theme_ingos(8)
 fig.ecosoc
 
-fig.save.cairo(fig.ecosoc, filename="fig_ecosoc",
-               width=3.35, height=3)
+# fig.save.cairo(fig.ecosoc, filename="fig_ecosoc",
+#                width=3.35, height=3)
+
+# Combine plots with gtable::cbind instead of gridExtra because it aligns axes
+# and titles across plots
+plot.all <- cbind(ggplotGrob(fig.ecosoc),
+                  ggplotGrob(fig.restrictions),
+                  size="first")  # Use the spacing from the first plot
+
+grid::grid.draw(plot.all)
+
+fig.save.cairo(plot.all, filename="fig_ingos",
+               width=7, height=3.5)
