@@ -2,6 +2,7 @@ library(dplyr)
 library(tidyr)
 library(readr)
 library(readxl)
+library(haven)
 library(lubridate)
 library(countrycode)
 library(feather)
@@ -83,3 +84,14 @@ if (!file.exists(file.path(PROJHOME, "data", "ecosoc.feather"))) {
   # Save this puppy
   write_feather(ecosoc.all, file.path(PROJHOME, "data", "ecosoc.feather"))
 }
+
+
+# ----------------------------
+# Bush:2015 replication data
+# ----------------------------
+# This Stata file is not currently available online. I received it via e-mail
+# from Sarah Bush.
+bush <- read_stata(file.path(PROJHOME, "data_raw", "Ch_5_Replication_File.dta")) %>%
+  mutate(year.actual = ymd(paste0(year, "-01-01"), quiet=TRUE))
+
+write_feather(bush, file.path(PROJHOME, "data", "bush.feather"))
