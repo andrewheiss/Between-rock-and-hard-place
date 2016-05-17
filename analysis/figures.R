@@ -74,7 +74,7 @@ fig.restrictions <- ggplot(restrictions,
   theme_ingos(8)
 fig.restrictions
 
-# fig.save.cairo(fig.restrictions, filename="fig_restrictions",
+# fig.save.cairo(fig.restrictions, filename="fig-restrictions",
 #                width=3.35, height=3)
 
 
@@ -109,7 +109,7 @@ fig.ecosoc <- ggplot(ecosoc.plot.data,
   theme_ingos(8)
 fig.ecosoc
 
-# fig.save.cairo(fig.ecosoc, filename="fig_ecosoc",
+# fig.save.cairo(fig.ecosoc, filename="fig-ecosoc",
 #                width=3.35, height=3)
 
 # Combine plots with gtable::cbind instead of gridExtra because it aligns axes
@@ -120,5 +120,5 @@ plot.all <- cbind(ggplotGrob(fig.ecosoc),
 
 grid::grid.draw(plot.all)
 
-fig.save.cairo(plot.all, filename="fig_ingos",
+fig.save.cairo(plot.all, filename="fig-ingos",
                width=7, height=3.5)
