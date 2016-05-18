@@ -56,7 +56,7 @@ restrictions <- dcjw %>%
   ungroup() %>%
   mutate(question = factor(question, levels=c("q_2a", "q_3e", "q_4a"),
                            labels=c("Registration requirements    ",
-                                    "Foreign funding prohibition    ",
+                                    "Foreign funding prohibitions    ",
                                     "Advocacy restrictions")))
 
 fig.restrictions <- ggplot(restrictions, 
@@ -146,5 +146,21 @@ plot.all <- cbind(ggplotGrob(fig.ecosoc),
 
 grid::grid.draw(plot.all)
 
-fig.save.cairo(plot.all, filename="fig-ingos",
+fig.save.cairo(plot.all, filename="fig-ingos-all",
                width=8, height=2.5)
+
+# Just donor and state environments
+fig.restrictions.plain <- fig.restrictions + 
+  labs(title=NULL, subtitle=NULL, caption=NULL)
+
+fig.bush.plain <- fig.bush +
+  labs(title=NULL, subtitle=NULL, caption=NULL)
+
+plot.env <- cbind(ggplotGrob(fig.restrictions.plain),
+                  ggplotGrob(fig.bush.plain),
+                  size="first")  # Use the spacing from the first plot
+
+grid::grid.draw(plot.env)
+
+fig.save.cairo(plot.env, filename="fig-ingos-env",
+               width=7, height=2.5)
