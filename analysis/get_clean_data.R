@@ -8,6 +8,8 @@ library(countrycode)
 library(feather)
 library(rvest)
 library(stringr)
+library(WDI)
+library(GGally)
 
 # -----------------------------------------------------------------------------
 # NB: See `data/external_data.yaml` for metadata about each of these datasets
@@ -99,3 +101,30 @@ bush <- read_stata(file.path(PROJHOME, "data_raw", "Ch_5_Replication_File.dta"))
   mutate(year.actual = ymd(paste0(year, "-01-01"), quiet=TRUE))
 
 write_feather(bush, file.path(PROJHOME, "data", "bush.feather"))
+
+
+# -----------
+# WDI stats
+# -----------
+wdi.indicators <- c("SH.H2O.SAFE.ZS",  # Access to water supply
+                    "SE.ADT.LITR.ZS",  # Adult literacy rate
+                    "SH.STA.ACSN",  # Improved sanitation access
+                    "SH.STA.MMRT",  # Maternal mortality rate
+                    "SP.DYN.IMRT.IN",  # Infant mortality
+                    "SI.POV.DDAY")  # Less than $2/day
+
+wdi.raw <- WDI(country="all", wdi.indicators, extra=TRUE, start=1981, end=2016)
+wdi.countries <- countrycode_data$iso2c
+
+wdi.clean <- wdi.raw %>%
+  filter(iso2c %in% wdi.countries) %>%
+  select(one_of(wdi.indicators)) %>%
+  rename(access.to.water = SH.H2O.SAFE.ZS,
+         adult.literacy = SE.ADT.LITR.ZS,
+         access.to.sanitation = SH.STA.ACSN,
+         maternal.mortality = SH.STA.MMRT,
+         infant.mortality = SP.DYN.IMRT.IN,
+         less.than.2.dollars.day = SI.POV.DDAY)
+
+ggplot2::theme_set(ggplot2::theme_light(9))
+all.corr <- ggpairs(wdi.clean)
