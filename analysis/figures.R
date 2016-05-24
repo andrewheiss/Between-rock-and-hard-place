@@ -82,7 +82,8 @@ restrictions.countries <- dcjw %>%
   filter(question %in% c("q_2a", "q_3e", "q_4a"), !is.na(year)) %>%
   arrange(year.actual) %>%
   group_by(country.name) %>%
-  summarise(count = n())
+  summarise(count = n()) %>%
+  arrange(desc(count))
 
 
 # Number of NGOs with ECOSOC status over time
