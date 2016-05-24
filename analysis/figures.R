@@ -4,6 +4,7 @@ library(ggplot2)
 library(gtable)
 library(Cairo)
 library(scales)
+library(lubridate)
 
 # Theme
 theme_ingos <- function(base_size=9, base_family="Open Sans Light") {
