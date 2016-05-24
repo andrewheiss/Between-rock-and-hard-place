@@ -78,6 +78,12 @@ fig.restrictions
 # fig.save.cairo(fig.restrictions, filename="fig-restrictions",
 #                width=3.35, height=3)
 
+restrictions.countries <- dcjw %>%
+  filter(question %in% c("q_2a", "q_3e", "q_4a"), !is.na(year)) %>%
+  arrange(year.actual) %>%
+  group_by(country.name) %>%
+  summarise(count = n())
+
 
 # Number of NGOs with ECOSOC status over time
 ecosoc <- read_feather(file.path(PROJHOME, "data", "ecosoc.feather"))
