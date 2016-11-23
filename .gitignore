@@ -10,6 +10,9 @@ manuscript/*.pdf
 manuscript/*.tex
 manuscript/tex_out/*
 submissions/*
+!submissions/response/*
+submissions/response/*.docx
+submissions/response/*.pdf
 
 # Figures
 figures/**.ai
