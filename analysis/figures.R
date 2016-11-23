@@ -153,8 +153,8 @@ plot.all <- cbind(ggplotGrob(fig.ecosoc),
 
 grid::grid.draw(plot.all)
 
-fig.save.cairo(plot.all, filename="fig-ingos-all",
-               width=8, height=2.5)
+# fig.save.cairo(plot.all, filename="fig-ingos-all",
+#                width=8, height=2.5)
 
 # Just donor and state environments
 fig.restrictions.plain <- fig.restrictions + 
