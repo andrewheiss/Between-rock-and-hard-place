@@ -12,8 +12,6 @@ manuscript/tex_out/*
 submissions/*
 
 # Figures
-figures/**.pdf
-figures/**.png
 figures/**.ai
 
 # R stuff
