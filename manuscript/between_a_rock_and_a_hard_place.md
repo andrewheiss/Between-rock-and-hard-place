@@ -123,9 +123,9 @@ All the figures can be replicated and recreated using code available at [https:/
 
 \begingroup \hangstart
 
-R Development Core Team. (2016). R: A language and environment for statistical computing. Vienna, Austria. [https://www.r-project.org](https://www.r-project.org). Version 3.3.1.
+R Development Core Team. 2016. *R: A language and environment for statistical computing.* Vienna, Austria. [https://www.r-project.org](https://www.r-project.org). Version 3.3.1.
 
-Wickham, H. (2009). ggplot2: Elegant graphics for data analysis. Springer New York. [http://ggplot2.org/book/](http://ggplot2.org/book/). Version 2.2.0.
+Wickham, Hadley. 2009. *ggplot2: Elegant graphics for data analysis.* New York: Springer. [http://ggplot2.org/book/](http://ggplot2.org/book/). Version 2.2.0.
 
 \endgroup
 
