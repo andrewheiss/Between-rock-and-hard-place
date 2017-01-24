@@ -8,6 +8,7 @@ author:
   affiliation: Duke University
   email: judith.kelley&#x40;duke.edu
 date: January 24, 2017
+published: "Forthcoming in the *Journal of Politics*"
 keywords: >-
    international NGOs; institutionalism; authoritarian regimes; donors;  international development; democracy aid
 reference-section-title: References
