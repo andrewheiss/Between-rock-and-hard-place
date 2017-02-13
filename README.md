@@ -5,7 +5,7 @@
 
 ---
 
-> Andrew Heiss and Judith G. Kelley, “Between a Rock and a Hard Place: International NGOs and the Dual Pressures of Donors and Host Governments,” *Journal of Politics*, forthcoming.
+> Andrew Heiss and Judith G. Kelley. 2017. “Between a Rock and a Hard Place: International NGOs and the Dual Pressures of Donors and Host Governments,” *Journal of Politics* 79, no. 2 (April). doi:[10.1086/691218](https://dx.doi.org/10.1086/691218)
 
 ---
 
